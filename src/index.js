@@ -1,29 +1,39 @@
-// 1. WIP SL : "Le tableau devra avoir au moins 7 colonnes dont : Nom, Prénom, Âge, Couleur des yeux et email."
-
-// 2. WIP SL : Le tableau devra pouvoir être filtré grâce à des paramètre en query `?` dans l'URL.
-//    WIP SL : L'entrée `eyeColor` devra être filtrable suivant l'une des valeurs suivantes: `blue`, `brown`, `green`
-//    WIP SL : L'entrée `age` devra être filtrable par tranche de 5 ans : de 20 à 25 ans, de 26 à 30 ans, de 31 à 35 ans et enfin de 36 à 41 ans
+//const fetch = require("node-fetch");
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
-const createTable = (table, data) => {
+const checkAge = (age, ageRange) => {
+  return ageRange.length === 2 &&
+    Number.isInteger(Number(ageRange[0])) &&
+    Number.isInteger(Number(ageRange[1])) &&
+    Number(age) >= Number(ageRange[0]) &&
+    Number(age) <= Number(ageRange[1])
+    ? true
+    : false;
+};
+
+const createTable = (data) => {
+  const table = document.createElement("table");
+  document.body.appendChild(table);
   // Table head
+  const dataRef = data[0];
+  // Create and populate table head
   const thead = table.createTHead();
   const row = thead.insertRow();
-  const rowRef = data[0];
-  Object.keys(rowRef).forEach((key) => {
+  Object.keys(dataRef).forEach((key) => {
     const th = document.createElement("th");
     row.appendChild(th);
     const text = document.createTextNode(key);
     th.appendChild(text);
     if (key === "name") {
-      const nestedRowRef = rowRef[key];
-      const tr = document.createElement("tr");
-      th.appendChild(tr);
-      Object.keys(nestedRowRef).forEach((key) => {
+      const nestedDataRef = dataRef[key];
+      const nestedTable = document.createElement("table");
+      th.appendChild(nestedTable);
+      const nestedRow = nestedTable.insertRow();
+      Object.keys(nestedDataRef).forEach((key) => {
         const th = document.createElement("th");
-        tr.appendChild(th);
+        nestedRow.appendChild(th);
         const text = document.createTextNode(key);
         th.appendChild(text);
       });
@@ -32,85 +42,52 @@ const createTable = (table, data) => {
 
   // Table content
   data
-    .filter((el) => {
+    .filter((dat) => {
       let flag = true;
       if (urlParams.get("eyeColor")) {
-        flag = el.eyeColor === urlParams.get("eyeColor");
+        flag = dat.eyeColor === urlParams.get("eyeColor");
       }
       if (urlParams.get("ageRange")) {
         const ageRange = urlParams.get("ageRange").split("-");
-        if (
-          !(
-            ageRange.length === 2 &&
-            Number.isInteger(Number(ageRange[0])) &&
-            Number.isInteger(Number(ageRange[1]))
-          )
-        ) {
-          flag = false;
-        } else {
-          flag =
-            Number(ageRange[0]) <= Number(el.age) &&
-            Number(el.age) <= Number(ageRange[1])
-              ? true
-              : false;
-        }
+        // Check if parameter is valid and age is inside range
+        flag = checkAge(dat.age, ageRange);
       }
       return flag;
     })
-    .forEach((el) => {
+    .forEach((dat) => {
+      // Create and populate table body
       let row = table.insertRow();
-      for (key in el) {
+      for (key in dat) {
         let cell = row.insertCell();
-        if (key === "name") {
-          const nestedEls = el[key];
+        if (key === "name" || key === "friends") {
+          const nestedDat = dat[key];
+          const nestedTable = document.createElement("table");
+          cell.appendChild(nestedTable);
           const tr = document.createElement("tr");
-          cell.appendChild(tr);
-          Object.keys(nestedEls).forEach((key) => {
+          nestedTable.appendChild(tr);
+
+          Object.keys(nestedDat).forEach((nestedKey) => {
             const th = document.createElement("td");
             tr.appendChild(th);
-            const text = document.createTextNode(nestedEls[key]);
-            th.appendChild(text);
-          });
-        } else if (key === "friends") {
-          const nestedEls = el[key];
-          const tr = document.createElement("tr");
-          cell.appendChild(tr);
-          Object.keys(nestedEls).forEach((key) => {
-            const th = document.createElement("td");
-            tr.appendChild(th);
-            const text = document.createTextNode(nestedEls[key].name);
+            const text = document.createTextNode(
+              key === "name" ? nestedDat[nestedKey] : nestedDat[nestedKey].name
+            );
             th.appendChild(text);
           });
         } else {
-          let text = document.createTextNode(el[key]);
+          let text = document.createTextNode(dat[key]);
           cell.appendChild(text);
         }
       }
     });
 };
 
-// WIP SL !!!! bug avec async/await
-
-let fetchAndCreate = (url) => {
+const fetchAndCreate = (url) => {
   fetch(url)
     .then((res) => res.json())
-    .then((data) => createTable(document.querySelector("table"), data));
+    .then((data) => createTable(data));
 };
 
 fetchAndCreate("./assets/datas.json");
 
-module.exports = createTable;
-
-// const englishCode = "en-US";
-// const spanishCode = "es-ES";
-// function getAboutUsLink(language) {
-//   switch (language.toLowerCase()) {
-//     case englishCode.toLowerCase():
-//       return "/about-us";
-//     case spanishCode.toLowerCase():
-//       return "/acerca-de";
-//   }
-//   return "";
-// }
-
-// module.exports = getAboutUsLink;
+module.exports = checkAge;
