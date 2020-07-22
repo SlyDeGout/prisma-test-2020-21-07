@@ -1,0 +1,35 @@
+{
+  "name": "prisma",
+  "version": "1.0.0",
+  "description": "recruitment test",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open --mode development --port 8080",
+    "build": "webpack --mode production",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlyDeGout/prisma-test-2020-21-07.git"
+  },
+  "author": "Sylvain Laborderie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SlyDeGout/prisma-test-2020-21-07/issues"
+  },
+  "homepage": "https://github.com/SlyDeGout/prisma-test-2020-21-07#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.5",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
+    "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.1.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

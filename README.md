@@ -1,9 +1,24 @@
 # prisma-test-2020-21-07
 
-Test de recrutement reçu le mardi 21 juillet, ce test a été commencé et fini le mercredi 22 juillet.
+Recruitment test received Tuesday 21/07/20, test done Wednesday 22/07/20.
 
-# Pour lancer l'application en mode developpement : npm start
+# Run app
 
-# Pour lancer les tests unitaires : npm test
+npm start
 
-# Pour builder l'application : npm build
+# Test app
+
+npm test
+
+# Build app
+
+npm run builds
+
+# URL Filtering parameters :
+
+- **colorEye** : `blue`, `brown` or `green`
+- **ageRange** : `20-25`, `26-30`, `31-35`, `36-41`
+
+example : _your_url_/?eyeColor=brown&ageRange=26-30
+
+**_NOTE :_** You can specify whatever ageRange you want ( example : _your_url_/?ageRange=1-145 )
