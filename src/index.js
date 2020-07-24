@@ -1,4 +1,4 @@
-//const fetch = require("node-fetch");
+const fetch = require("node-fetch");
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -43,16 +43,17 @@ const createTable = (data) => {
   // Table content
   data
     .filter((dat) => {
-      let flag = true;
+      let flagEye = true;
+      let flagAge = true;
       if (urlParams.get("eyeColor")) {
-        flag = dat.eyeColor === urlParams.get("eyeColor");
+        flagEye = dat.eyeColor === urlParams.get("eyeColor");
       }
       if (urlParams.get("ageRange")) {
         const ageRange = urlParams.get("ageRange").split("-");
         // Check if parameter is valid and age is inside range
-        flag = checkAge(dat.age, ageRange);
+        flagAge = checkAge(dat.age, ageRange);
       }
-      return flag;
+      return flagEye && flagAge;
     })
     .forEach((dat) => {
       // Create and populate table body
@@ -88,6 +89,6 @@ const fetchAndCreate = (url) => {
     .then((data) => createTable(data));
 };
 
-fetchAndCreate("./assets/datas.json");
+fetchAndCreate("assets/datas.json");
 
 module.exports = checkAge;
